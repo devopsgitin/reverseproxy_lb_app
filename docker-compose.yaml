@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  proxyapp:
+    image: devopsdock1/proxyapp
+    deploy:
+      placement:
+        constraints:
+          - "node.role==worker"
+    ports:
+      - 1001:80
+  
+  app1:
+    image: devopsdock1/proxyapp1
+    deploy:
+      replicas: 2
+      placement:
+        constraints:
+          - "node.role==worker"
+    ports:
+      - 1080:8080
+  
+  app2:
+    image: devopsdock1/proxyapp2
+    deploy:
+      replicas: 2
+      placement:
+        constraints:
+          - "node.role==worker"
+    ports:
+      - 1180:8080
+  
+  proxy:
+    image: devopsdock1/proxytest:v3
+    deploy:
+      placement:
+        constraints:
+          - "node.role==worker"
+    ports:
+      - 80:80
+    depends_on:
+      - proxyapp
+      - app1
+      - app2
